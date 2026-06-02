@@ -1,0 +1,13 @@
+CREATE TABLE muscle_groups (
+    id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT    NOT NULL
+);
+
+insert:
+INSERT INTO muscle_groups (name) VALUES (?);
+
+selectAll:
+SELECT * FROM muscle_groups ORDER BY id ASC;
+
+selectById:
+SELECT * FROM muscle_groups WHERE id = ?;

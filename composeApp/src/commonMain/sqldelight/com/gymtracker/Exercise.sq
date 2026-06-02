@@ -1,0 +1,29 @@
+CREATE TABLE exercises (
+    id            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    muscleGroupId INTEGER NOT NULL REFERENCES muscle_groups(id) ON DELETE CASCADE,
+    name          TEXT    NOT NULL,
+    description   TEXT    NOT NULL,
+    photoPath     TEXT
+);
+
+insert:
+INSERT INTO exercises (muscleGroupId, name, description, photoPath)
+VALUES (?, ?, ?, ?);
+
+selectAllGroups:
+SELECT * FROM exercises;
+
+selectByGroup:
+SELECT * FROM exercises WHERE muscleGroupId = ? ORDER BY name ASC;
+
+selectById:
+SELECT * FROM exercises WHERE id = ?;
+
+updatePhotoPath:
+UPDATE exercises SET photoPath = ? WHERE id = ?;
+
+updateExercise:
+UPDATE exercises SET name = ?, description = ?, photoPath = ? WHERE id = ?;
+
+delete:
+DELETE FROM exercises WHERE id = ?;

@@ -1,0 +1,30 @@
+CREATE TABLE sessions (
+    id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    exerciseId INTEGER NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
+    date       INTEGER NOT NULL,
+    sets       INTEGER NOT NULL,
+    reps       INTEGER NOT NULL,
+    weightKg   REAL    NOT NULL
+);
+
+insert:
+INSERT INTO sessions (exerciseId, date, sets, reps, weightKg)
+VALUES (?, ?, ?, ?, ?);
+
+selectByExercise:
+SELECT * FROM sessions WHERE exerciseId = ? ORDER BY date DESC;
+
+selectLatestByExercise:
+SELECT * FROM sessions WHERE exerciseId = ? ORDER BY date DESC LIMIT 1;
+
+selectMaxWeightByExercise:
+SELECT MAX(weightKg) FROM sessions WHERE exerciseId = ?;
+
+selectLatestByGroup:
+SELECT s.* FROM sessions s
+INNER JOIN exercises e ON s.exerciseId = e.id
+WHERE e.muscleGroupId = ?
+ORDER BY s.date DESC LIMIT 1;
+
+delete:
+DELETE FROM sessions WHERE id = ?;

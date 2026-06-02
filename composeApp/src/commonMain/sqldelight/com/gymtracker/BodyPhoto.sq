@@ -1,0 +1,24 @@
+CREATE TABLE body_photos (
+    id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    date      INTEGER NOT NULL,
+    zone      TEXT    NOT NULL,
+    photoPath TEXT    NOT NULL
+);
+
+insert:
+INSERT INTO body_photos (date, zone, photoPath) VALUES (?, ?, ?);
+
+selectAll:
+SELECT * FROM body_photos ORDER BY date DESC;
+
+selectByZone:
+SELECT * FROM body_photos WHERE zone = ? ORDER BY date DESC;
+
+selectById:
+SELECT * FROM body_photos WHERE id = ? LIMIT 1;
+
+updatePhotoPath:
+UPDATE body_photos SET photoPath = ? WHERE id = ?;
+
+delete:
+DELETE FROM body_photos WHERE id = ?;
