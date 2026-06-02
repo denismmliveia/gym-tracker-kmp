@@ -39,6 +39,10 @@ kotlin {
             implementation(libs.coroutines.core)
             implementation(libs.coil3.compose)
             implementation(libs.peekaboo.image.picker)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.datastore.preferences.core)
+            implementation(libs.vico.multiplatform)
+            implementation(libs.peekaboo.ui)
         }
         androidMain.dependencies {
             implementation(libs.core.ktx)
