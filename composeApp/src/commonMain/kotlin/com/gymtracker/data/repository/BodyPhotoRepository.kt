@@ -2,7 +2,7 @@ package com.gymtracker.data.repository
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import com.gymtracker.data.db.Body_photos
+import com.gymtracker.Body_photos
 import com.gymtracker.data.db.GymTrackerDatabase
 import com.gymtracker.data.entity.BodyZone
 import kotlinx.coroutines.Dispatchers
@@ -13,32 +13,32 @@ import kotlinx.coroutines.withContext
 class BodyPhotoRepository(private val db: GymTrackerDatabase) {
 
     fun getAllPhotos(): Flow<List<Body_photos>> =
-        db.bodyPhotosQueries.selectAll()
+        db.bodyPhotoQueries.selectAll()
             .asFlow()
             .mapToList(Dispatchers.IO)
 
     fun getPhotosByZone(zone: BodyZone): Flow<List<Body_photos>> =
-        db.bodyPhotosQueries.selectByZone(zone.name)
+        db.bodyPhotoQueries.selectByZone(zone.name)
             .asFlow()
             .mapToList(Dispatchers.IO)
 
     suspend fun getPhotoById(id: Long): Body_photos? = withContext(Dispatchers.IO) {
-        db.bodyPhotosQueries.selectById(id).executeAsOneOrNull()
+        db.bodyPhotoQueries.selectById(id).executeAsOneOrNull()
     }
 
     suspend fun insertPhoto(date: Long, zone: BodyZone, photoPath: String): Long =
         withContext(Dispatchers.IO) {
-            db.bodyPhotosQueries.transactionWithResult {
-                db.bodyPhotosQueries.insert(date, zone.name, photoPath)
-                db.bodyPhotosQueries.selectAll().executeAsList().first().id
+            db.bodyPhotoQueries.transactionWithResult {
+                db.bodyPhotoQueries.insert(date, zone.name, photoPath)
+                db.bodyPhotoQueries.selectAll().executeAsList().first().id
             }
         }
 
     suspend fun updatePhotoPath(photoId: Long, path: String) = withContext(Dispatchers.IO) {
-        db.bodyPhotosQueries.updatePhotoPath(path, photoId)
+        db.bodyPhotoQueries.updatePhotoPath(path, photoId)
     }
 
     suspend fun deletePhoto(photo: Body_photos) = withContext(Dispatchers.IO) {
-        db.bodyPhotosQueries.delete(photo.id)
+        db.bodyPhotoQueries.delete(photo.id)
     }
 }

@@ -2,7 +2,7 @@ package com.gymtracker.data.db
 
 object DatabaseSeeder {
     fun seed(db: GymTrackerDatabase) {
-        val groups = db.muscleGroupsQueries.selectAll().executeAsList()
+        val groups = db.muscleGroupQueries.selectAll().executeAsList()
         if (groups.isNotEmpty()) return
 
         val muscleData = listOf(
@@ -55,12 +55,12 @@ object DatabaseSeeder {
         )
 
         for ((groupName, exercises) in muscleData) {
-            val groupId = db.muscleGroupsQueries.transactionWithResult {
-                db.muscleGroupsQueries.insert(groupName)
-                db.muscleGroupsQueries.selectAll().executeAsList().last().id
+            val groupId = db.muscleGroupQueries.transactionWithResult {
+                db.muscleGroupQueries.insert(groupName)
+                db.muscleGroupQueries.selectAll().executeAsList().last().id
             }
             for ((exerciseName, description) in exercises) {
-                db.exercisesQueries.insert(groupId, exerciseName, description, null)
+                db.exerciseQueries.insert(groupId, exerciseName, description, null)
             }
         }
     }
