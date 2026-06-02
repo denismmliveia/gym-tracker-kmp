@@ -34,4 +34,8 @@ class SessionRepository(private val db: GymTrackerDatabase) {
     suspend fun deleteSession(session: Sessions) = withContext(Dispatchers.IO) {
         db.sessionQueries.delete(session.id)
     }
+
+    suspend fun getLatestSessionForGroup(groupId: Long): Sessions? = withContext(Dispatchers.IO) {
+        db.sessionQueries.selectLatestByGroup(groupId).executeAsOneOrNull()
+    }
 }

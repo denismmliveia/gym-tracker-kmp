@@ -41,4 +41,16 @@ class ExerciseRepository(private val db: GymTrackerDatabase) {
     suspend fun updatePhotoPath(exerciseId: Long, path: String?) = withContext(Dispatchers.IO) {
         db.exerciseQueries.updatePhotoPath(path, exerciseId)
     }
+
+    suspend fun insertMuscleGroup(name: String) = withContext(Dispatchers.IO) {
+        db.muscleGroupQueries.insert(name)
+    }
+
+    suspend fun getGroupById(groupId: Long): Muscle_groups? = withContext(Dispatchers.IO) {
+        db.muscleGroupQueries.selectById(groupId).executeAsOneOrNull()
+    }
+
+    suspend fun deleteExercise(exercise: Exercises) = withContext(Dispatchers.IO) {
+        db.exerciseQueries.delete(exercise.id)
+    }
 }
