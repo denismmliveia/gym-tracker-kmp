@@ -1,0 +1,88 @@
+workflows:
+
+  # ── Android Debug APK ────────────────────────────────────────────────────────
+  android-build:
+    name: Android Debug APK
+    max_build_duration: 30
+    instance_type: linux_x2
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+
+    environment:
+      java: 17
+
+    scripts:
+      - name: Build Android APK
+        script: ./gradlew :composeApp:assembleDebug
+
+    artifacts:
+      - composeApp/build/outputs/apk/debug/*.apk
+
+  # ── iOS TestFlight ────────────────────────────────────────────────────────────
+  ios-build:
+    name: iOS TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+
+    environment:
+      xcode: latest
+      java: 17
+      vars:
+        BUNDLE_ID: com.gymtracker
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+        CERTIFICATE_PRIVATE_KEY: $CERTIFICATE_PRIVATE_KEY
+
+    integrations:
+      app_store_connect: GymTracker_ASC
+
+    scripts:
+      - name: Compile Kotlin/Native for iOS
+        script: ./gradlew :composeApp:assembleReleaseXCFramework
+
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files \
+            $BUNDLE_ID \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+
+      - name: Build and archive iOS app
+        script: |
+          xcode-project build-ipa \
+            --project iosApp/iosApp.xcodeproj \
+            --scheme iosApp \
+            --archive-flags="-destination 'generic/platform=iOS'"
+
+      - name: Upload to TestFlight
+        script: |
+          app-store-connect publish \
+            --path $(find build/ios/ipa -name "*.ipa" | head -1) \
+            --release-type MANUAL
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testers
