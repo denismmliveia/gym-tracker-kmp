@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gymtracker.ui.navigation.AppNavigation
 import com.gymtracker.ui.theme.GymTrackerTheme
 import com.gymtracker.ui.theme.ThemeViewModel
 
@@ -16,9 +17,9 @@ fun App(container: AppContainer) {
     CompositionLocalProvider(LocalAppContainer provides container) {
         GymTrackerTheme(
             primaryColor   = accent.primary,
-            secondaryColor = accent.secondary
+            secondaryColor = accent.secondary,
         ) {
-            // AppNavigation wired in Plan B3
+            AppNavigation()
         }
     }
 }
